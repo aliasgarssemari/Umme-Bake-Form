@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Umme Bakes - Handcrafted Goodness</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+      /* --- 1. Global Styles & Variables --- */
+      :root {
+        --primary-color: #8D5B4C;
+        /* A warm, deep brown */
+        --secondary-color: #F4E3D3;
+        /* A soft, creamy beige */
+        --accent-color: #E6A4B4;
+        /* A delicate pink */
+        --text-color: #3D2B1F;
+        /* Dark chocolate text */
+        --light-text: #F9F6F2;
+        --white: #FFFFFF;
+        --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        --border-radius: 12px;
+      }
+
+      @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'Poppins', sans-serif;
+        color: var(--text-color);
+        background-color: var(--light-text);
+        line-height: 1.6;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        color: var(--primary-color);
+      }
+
+      h1 {
+        font-size: 3.5rem;
+      }
+
+      h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      h3 {
+        font-size: 1.5rem;
+      }
+
+      p {
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+        color: #5C4B3E;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+
+      a {
+        text-decoration: none;
+        color: var(--primary-color);
+        transition: color 0.3s ease;
+      }
+
+      a:hover {
+        color: var(--accent-color);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+      }
+
+      .btn {
+        display: inline-block;
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 0.8rem 1.8rem;
+        border: none;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 10px rgba(141, 91, 76, 0.3);
+      }
+
+      .btn:hover {
+        background: var(--accent-color);
+        color: var(--text-color);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(230, 164, 180, 0.4);
+      }
+
+      /* Loading state for button */
+      .btn:disabled,
+      .btn.loading {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .btn-secondary {
+        background: var(--secondary-color);
+        color: var(--primary-color);
+        box-shadow: none;
+      }
+
+      .btn-secondary:hover {
+        background: #e9d5c4;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      /* --- 2. Navigation --- */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 3rem;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .navbar .logo {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+      }
+
+      .nav-links li {
+        margin-left: 2.5rem;
+      }
+
+      .nav-links a {
+        font-size: 1.1rem;
+        font-weight: 600;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid transparent;
+      }
+
+      .nav-links a:hover,
+      .nav-links a.active {
+        color: var(--primary-color);
+        border-bottom-color: var(--accent-color);
+      }
+
+      .nav-cart-icon {
+        position: relative;
+        cursor: pointer;
+        font-size: 1.5rem;
+      }
+
+      #cart-count {
+        position: absolute;
+        top: -10px;
+        right: -12px;
+        background: var(--accent-color);
+        color: var(--white);
+        font-size: 0.8rem;
+        font-weight: 600;
+        border-radius: 50%;
+        padding: 0.2rem 0.5rem;
+        display: none;
+        /* Hidden by default */
+      }
+
+      /* --- 3. Page Sections --- */
+      .page-section {
+        display: none;
+        /* All sections hidden by default */
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+        animation: fadeIn 0.8s ease;
+      }
+
+      .page-section.active {
+        display: block;
+        /* Show active section */
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* --- 4. Home Page --- */
+      #home {
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+
+      /* Vertical Scroll 1: Hero */
+      .hero {
+        display: flex;
+        align-items: center;
+        min-height: 90vh;
+        background: linear-gradient(rgba(244, 227, 211, 0.8), rgba(244, 227, 211, 0.8)), url('https://via.placeholder.com/1500x1000/F4E3D3/8D5B4C?text=Beautiful+Bakery+Display') no-repeat center center/cover;
+        padding: 0 3rem;
+      }
+
+      .hero-content {
+        max-width: 600px;
+      }
+
+      .hero-content .subtitle {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--accent-color);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+      }
+
+      .hero-content h1 {
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+      }
+
+      /* Horizontal Scroll Section */
+      .horizontal-scroll-section {
+        background: var(--white);
+        padding: 5rem 0;
+        overflow: hidden;
+      }
+
+      .horizontal-scroll-section .container {
+        padding-left: 2rem;
+        padding-right: 0;
+        max-width: 100%;
+      }
+
+      .horizontal-scroll-section h2 {
+        padding-left: 1rem;
+        /* Aligns with container padding */
+      }
+
+      .horizontal-wrapper {
+        display: flex;
+        overflow-x: auto;
+        padding: 2rem 0 2rem 1rem;
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent-color) var(--secondary-color);
+      }
+
+      /* Webkit scrollbar styles */
+      .horizontal-wrapper::-webkit-scrollbar {
+        height: 8px;
+      }
+
+      .horizontal-wrapper::-webkit-scrollbar-track {
+        background: var(--secondary-color);
+        border-radius: 10px;
+      }
+
+      .horizontal-wrapper::-webkit-scrollbar-thumb {
+        background-color: var(--accent-color);
+        border-radius: 10px;
+      }
+
+      .horizontal-card {
+        flex: 0 0 320px;
+        margin-right: 1.5rem;
+        background: var(--light-text);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .horizontal-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .horizontal-card-img {
+        height: 250px;
+        background: var(--secondary-color) no-repeat center center/cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+
+      .horizontal-card-content {
+        padding: 1.5rem;
+      }
+
+      .horizontal-card-content h3 {
+        margin-bottom: 0.5rem;
+      }
+
+      /* Vertical Scroll 2: About */
+      .about-section {
+        display: flex;
+        align-items: center;
+        gap: 3rem;
+        padding: 6rem 2rem;
+        background: var(--secondary-color);
+      }
+
+      .about-image {
+        flex: 1;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+
+      .about-image div {
+        height: 500px;
+        width: 100%;
+        background: var(--white) no-repeat center center/cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        color: var(--primary-color);
+        font-size: 1.2rem;
+      }
+
+      .about-content {
+        flex: 1;
+      }
+
+      /* --- 5. Shop Page --- */
+      #shop .search-bar {
+        margin: 0 auto 2.5rem auto;
+        max-width: 600px;
+        position: relative;
+      }
+
+      #search-input {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        border: 2px solid var(--secondary-color);
+        box-shadow: var(--shadow);
+        transition: border-color 0.3s ease;
+      }
+
+      #search-input:focus {
+        outline: none;
+        border-color: var(--accent-color);
+      }
+
+      .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+      }
+
+      .product-card {
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .product-card.hidden {
+        display: none;
+      }
+
+      .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+      }
+
+      .product-image-placeholder {
+        height: 250px;
+        background: var(--secondary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+        font-weight: 600;
+        text-align: center;
+        padding: 1rem;
+      }
+
+      .product-content {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+      }
+
+      .product-content h3 {
+        margin-bottom: 0.5rem;
+      }
+
+      .product-content p {
+        font-size: 0.95rem;
+        flex-grow: 1;
+        margin-bottom: 1rem;
+      }
+
+      .product-card .btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      /* --- 6. Login Page --- */
+      .login-form-container {
+        max-width: 500px;
+        margin: 0 auto;
+        background: var(--white);
+        padding: 3rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+
+      .login-form-container .btn {
+        width: 100%;
+      }
+
+      /* --- 7. Cart Modal --- */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        z-index: 1001;
+        display: none;
+        /* Hidden by default */
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .modal-overlay.active {
+        display: block;
+        opacity: 1;
+      }
+
+      .cart-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 600px;
+        max-height: 85vh;
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        z-index: 1002;
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        transform: translate(-50%, -45%);
+        transition: all 0.3s ease;
+      }
+
+      .modal-overlay.active .cart-modal {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+
+      .cart-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--secondary-color);
+      }
+
+      .cart-modal-header h2 {
+        margin: 0;
+      }
+
+      #close-cart-btn {
+        font-size: 2rem;
+        color: var(--text-color);
+        cursor: pointer;
+        border: none;
+        background: none;
+      }
+
+      .cart-modal-body {
+        padding: 2rem;
+        overflow-y: auto;
+        flex-grow: 1;
+      }
+
+      #cart-items-list {
+        list-style: none;
+      }
+
+      .cart-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 1.5rem;
+      }
+
+      .cart-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+      }
+
+      .cart-item-info {
+        flex-grow: 1;
+        margin-left: 1rem;
+      }
+
+      .cart-item-info h4 {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+      }
+
+      .remove-item-btn {
+        background: none;
+        border: none;
+        color: var(--accent-color);
+        font-size: 0.9rem;
+        cursor: pointer;
+        margin-left: 1rem;
+        font-weight: 600;
+      }
+
+      .cart-empty-msg {
+        text-align: center;
+        color: #888;
+      }
+
+      /* FIX: Re-introduced and fixed the cart modal footer HTML */
+      .cart-modal-footer {
+        padding: 2rem;
+        border-top: 1px solid var(--secondary-color);
+        background: var(--light-text);
+      }
+
+      .cart-remarks label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      #cart-remarks-input {
+        width: 100%;
+        min-height: 80px;
+        padding: 0.8rem 1rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        resize: vertical;
+        margin-bottom: 1.5rem;
+      }
+
+      .cart-total {
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+      }
+
+      #place-order-btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      /* --- 8. Toast Notification --- */
+      #toast-notification {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #333;
+        color: var(--white);
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        z-index: 2000;
+        font-weight: 600;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+      }
+
+      #toast-notification.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, 0);
+      }
+
+      /* --- 9. Footer --- */
+      .footer {
+        background: var(--primary-color);
+        color: var(--secondary-color);
+        padding: 4rem 2rem 2rem;
+        text-align: center;
+      }
+
+      .footer p {
+        color: var(--secondary-color);
+        font-size: 1rem;
+      }
+
+      /* --- 10. Responsive --- */
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5rem;
+        }
+
+        h2 {
+          font-size: 2rem;
+        }
+
+        .navbar {
+          flex-direction: column;
+          padding: 1rem;
+        }
+
+        .navbar .logo {
+          margin-bottom: 1rem;
+        }
+
+        .nav-links {
+          justify-content: center;
+          width: 100%;
+        }
+
+        .nav-links li {
+          margin: 0 1rem;
+        }
+
+        .nav-links a {
+          font-size: 1rem;
+        }
+
+        .hero {
+          min-height: 70vh;
+          text-align: center;
+        }
+
+        .hero-content {
+          padding: 2rem;
+        }
+
+        .about-section {
+          flex-direction: column;
+          padding: 4rem 1rem;
+        }
+
+        .container {
+          padding: 0 1rem;
+        }
+
+        .page-section {
+          padding-top: 2rem;
+          padding-bottom: 2rem;
+        }
+
+        .login-form-container {
+          padding: 2rem;
+        }
+
+        .cart-modal {
+          width: 95%;
+        }
+
+        .cart-modal-body,
+        .cart-modal-footer,
+        .cart-modal-header {
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="navbar">
+      <a href="#home" class="logo nav-link" data-page="home">Umme Bakes</a>
+      <ul class="nav-links">
+        <li>
+          <a href="#home" class="nav-link active" data-page="home">Home</a>
+        </li>
+        <li>
+          <a href="#shop" class="nav-link" data-page="shop">Shop Now</a>
+        </li>
+        <li>
+          <a href="#login" class="nav-link" id="login-nav-link" data-page="login">Login</a>
+        </li>
+      </ul>
+      <div class="nav-cart-icon" id="open-cart-btn"> 🛒 <span id="cart-count">0</span>
+      </div>
+    </header>
+    <main>
+      <section id="home" class="page-section active">
+        <div class="hero">
+          <div class="hero-content">
+            <span class="subtitle">Baked with Love</span>
+            <h1>Where Every Bite is a Celebration</h1>
+            <p>Welcome to Umme Bakes, your home for artisanal cakes, pastries, and handcrafted treats. We use only the finest ingredients to create unforgettable flavors.</p>
+            <a href="#shop" class="btn nav-link" data-page="shop">Discover Our Menu</a>
+          </div>
+        </div>
+        <div class="horizontal-scroll-section">
+          <div class="container">
+            <h2>Our Specialties</h2>
+            <div class="horizontal-wrapper">
+              <div class="horizontal-card">
+                <div class="horizontal-card-img" style="background-image: url('https://via.placeholder.com/320x250/F4E3D3/8D5B4C?text=Saffron+Cake+Image');"></div>
+                <div class="horizontal-card-content">
+                  <h3>Saffron Tres Leches</h3>
+                  <p>A luxurious and moist cake soaked in three types of saffron-infused milk.</p>
+                </div>
+              </div>
+              <div class="horizontal-card">
+                <div class="horizontal-card-img" style="background-image: url('https://via.placeholder.com/320x250/F4E3D3/8D5B4C?text=Rasmalai+Cake+Image');"></div>
+                <div class="horizontal-card-content">
+                  <h3>Rasmalai Fusion Cake</h3>
+                  <p>The perfect blend of classic Indian dessert and a soft, delicate sponge cake.</p>
+                </div>
+              </div>
+              <div class="horizontal-card">
+                <div class="horizontal-card-img" style="background-image: url('https://via.placeholder.com/320x250/F4E3D3/8D5B4C?text=Red+Velvet+Image');"></div>
+                <div class="horizontal-card-content">
+                  <h3>Classic Red Velvet</h3>
+                  <p>Our signature cream cheese frosting on a velvety, rich cocoa-buttermilk cake.</p>
+                </div>
+              </div>
+              <div class="horizontal-card">
+                <div class="horizontal-card-img" style="background-image: url('https://via.placeholder.com/320x250/F4E3D3/8D5B4C?text=Chocolate+Truffle');"></div>
+                <div class="horizontal-card-content">
+                  <h3>Decadent Chocolate Truffle</h3>
+                  <p>A must-have for chocolate lovers. Rich, dark, and utterly satisfying.</p>
+                </div>
+              </div>
+              <div class="horizontal-card">
+                <div class="horizontal-card-img" style="background-image: url('https://via.placeholder.com/320x250/F4E3D3/8D5B4C?text=Fruit+Overload');"></div>
+                <div class="horizontal-card-content">
+                  <h3>Fresh Fruit Overload</h3>
+                  <p>A light vanilla sponge layered with fresh cream and seasonal fruits.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="about-section">
+          <div class="container" style="display: flex; align-items: center; gap: 3rem; flex-wrap: wrap;">
+            <div class="about-image">
+              <div style="background-image: url('https://via.placeholder.com/600x500/FFFFFF/8D5B4C?text=Umme+Bakes+Logo+or+Portrait');"> [Image: Your Logo or Photo Here] </div>
+            </div>
+            <div class="about-content">
+              <span class="subtitle">Our Story</span>
+              <h2>Crafted by Hand, Baked from the Heart</h2>
+              <p>Umme Bakes started from a simple passion: to bring joy to people through the art of baking. What began in a home kitchen has blossomed into a beloved community bakery, but our philosophy remains the same.</p>
+              <p>We believe in quality over quantity. Every cake is a centerpiece, every pastry a small moment of happiness. We are dedicated to our craft and to you, our cherished customer.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="shop" class="page-section">
+        <div class="container">
+          <h2>Our Full Menu</h2>
+          <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search for cakes, flavors, and more...">
+          </div>
+          <div class="product-grid" id="product-grid-container"></div>
+        </div>
+      </section>
+      <section id="login" class="page-section">
+        <div class="container">
+          <div class="login-form-container">
+            <h2>Welcome!</h2>
+            <p>Please enter your details to proceed. We'll remember you for next time!</p>
+            <form id="login-form">
+              <div class="form-group">
+                <label for="user-name">Full Name</label>
+                <input type="text" id="user-name" required>
+              </div>
+              <div class="form-group">
+                <label for="user-email">Email ID</label>
+                <input type="email" id="user-email" required>
+              </div>
+              <div class="form-group">
+                <label for="user-phone">Phone Number</label>
+                <input type="tel" id="user-phone" required>
+              </div>
+              <div class="form-group">
+                <label for="user-location">Location / Address</label>
+                <input type="text" id="user-location" required>
+              </div>
+              <button type="submit" class="btn">Login & Continue</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div class="modal-overlay" id="cart-modal-overlay">
+      <div class="cart-modal">
+        <div class="cart-modal-header">
+          <h2>Your Cart</h2>
+          <button id="close-cart-btn">&times;</button>
+        </div>
+        <div class="cart-modal-body">
+          <ul id="cart-items-list">
+            <p class="cart-empty-msg">Your cart is currently empty.</p>
+          </ul>
+        </div>
+        <div class="cart-modal-footer">
+          <div class="cart-remarks">
+            <label for="cart-remarks-input">Add Remarks (Optional)</label>
+            <textarea id="cart-remarks-input" placeholder="e.g., 'Happy Birthday, Ali!', 'Less sweet please'"></textarea>
+          </div>
+          <div class="cart-total">
+            <span>Total</span>
+            <span id="cart-total-price">$0.00</span>
+          </div>
+          <button id="place-order-btn" class="btn">Place Order</button>
+        </div>
+      </div>
+    </div>
+    <div id="toast-notification">Item added to cart!</div>
+    <footer class="footer">
+      <div class="container">
+        <p class="logo" style="font-size: 2.5rem; color: var(--light-text); margin-bottom: 1rem;">Umme Bakes</p>
+        <p>Handcrafted Goodness, Just For You.</p>
+        <p>&copy; 2025 Umme Bakes. All Rights Reserved.</p>
+      </div>
+    </footer>
+    <script>
+      // Wait for the DOM to be fully loaded before running the script
+      document.addEventListener('DOMContentLoaded', () => {
+        // --- 1. PRODUCT DATABASE ---
+        const allProducts = [{
+          id: 1,
+          name: "Saffron Cake (Tres Leches)",
+          description: "A luxurious, moist sponge soaked in three types of saffron-infused milk.",
+          price: 40.00,
+          image: "Saffron+Cake"
+        }, {
+          id: 2,
+          name: "Rasmalai Cake",
+          description: "The perfect fusion of Indian rasmalai dessert and a delicate, cardamom-spiced cake.",
+          price: 45.00,
+          image: "Rasmalai+Cake"
+        }, {
+          id: 3,
+          name: "Classic Red Velvet",
+          description: "Our signature buttermilk-cocoa cake with a rich, tangy cream cheese frosting.",
+          price: 35.00,
+          image: "Red+Velvet+Cake"
+        }, {
+          id: 4,
+          name: "Decadent Chocolate Truffle",
+          description: "A dream for chocolate lovers. Layers of dark chocolate ganache and moist sponge.",
+          price: 38.00,
+          image: "Chocolate+Truffle+Cake"
+        }, {
+          id: 5,
+          name: "Fresh Fruit Overload",
+          description: "Light vanilla sponge layered with whipped cream and a mountain of fresh, seasonal fruits.",
+          price: 42.00,
+          image: "Fresh+Fruit+Cake"
+        }, {
+          id: 6,
+          name: "Nutella Hazelnut Supreme",
+          description: "Rich hazelnut and chocolate sponge, filled and frosted with creamy Nutella.",
+          price: 40.00,
+          image: "Nutella+Cake"
+        }, {
+          id: 7,
+          name: "Lemon Blueberry Bliss",
+          description: "A zesty lemon cake studded with juicy blueberries and a light lemon glaze.",
+          price: 32.00,
+          image: "Lemon+Blueberry+Cake"
+        }, {
+          id: 8,
+          name: "Carrot Cake with Cream Cheese",
+          description: "Perfectly spiced carrot cake packed with walnuts and topped with our classic frosting.",
+          price: 36.00,
+          image: "Carrot+Cake"
+        }, {
+          id: 9,
+          name: "Pistachio Rosewater Cake",
+          description: "An elegant, aromatic cake with ground pistachios and a subtle hint of rose.",
+          price: 48.00,
+          image: "Pistachio+Rose+Cake"
+        }, {
+          id: 10,
+          name: "Classic Tiramisu",
+          description: "Ladyfingers soaked in espresso, layered with a whipped mascarpone cream.",
+          price: 35.00,
+          image: "Tiramisu+Cake"
+        }, {
+          id: 11,
+          name: "Mango Mousse Cake",
+          description: "A light and airy mango mousse on a thin sponge base. Perfect for summer.",
+          price: 37.00,
+          image: "Mango+Mousse+Cake"
+        }, {
+          id: 12,
+          name: "New York Cheesecake",
+          description: "Dense, rich, and creamy classic cheesecake with a graham cracker crust.",
+          price: 30.00,
+          image: "New+York+Cheesecake"
+        }, {
+          id: 13,
+          name: "Black Forest Gâteau",
+          description: "Traditional German chocolate and cherry cake with fresh whipped cream.",
+          price: 38.00,
+          image: "Black+Forest+Cake"
+        }, {
+          id: 14,
+          name: "Salted Caramel Drip Cake",
+          description: "A showstopper. Vanilla bean cake with salted caramel buttercream and drip.",
+          price: 50.00,
+          image: "Salted+Caramel+Cake"
+        }, {
+          id: 15,
+          name: "Matcha Green Tea Cake",
+          description: "Earthy and sweet matcha sponge layered with a light cream.",
+          price: 40.00,
+          image: "Matcha+Cake"
+        }, {
+          id: 16,
+          name: "Coconut Cream Cake",
+          description: "A tropical delight. Fluffy coconut cake with a creamy coconut filling.",
+          price: 35.00,
+          image: "Coconut+Cream+Cake"
+        }, {
+          id: 17,
+          name: "Opera Cake",
+          description: "An intricate French cake with layers of almond sponge, coffee, and chocolate.",
+          price: 55.00,
+          image: "Opera+Cake"
+        }, {
+          id: 18,
+          name: "Belgian Chocolate Mousse",
+          description: "Pure, unadulterated Belgian chocolate mousse. Rich and simple.",
+          price: 33.00,
+          image: "Chocolate+Mousse+Cake"
+        }, {
+          id: 19,
+          name: "Cookies & Cream (Oreo)",
+          description: "A crowd-pleaser. Vanilla cake with crushed Oreo cookies in the frosting.",
+          price: 36.00,
+          image: "Oreo+Cake"
+        }, {
+          id: 20,
+          name: "Almond Praline Crunch",
+          description: "Toasted almonds and crunchy praline layered with a smooth almond buttercream.",
+          price: 42.00,
+          image: "Almond+Praline+Cake"
+        }, {
+          id: 21,
+          name: "Gooey Butter Cake",
+          description: "A St. Louis specialty. A dense, buttery cake with a sweet, gooey topping.",
+          price: 30.00,
+          image: "Butter+Cake"
+        }, {
+          id: 22,
+          name: "Pineapple Upside-Down Cake",
+          description: "A retro classic, perfectly caramelized pineapple and maraschino cherries.",
+          price: 32.00,
+          image: "Pineapple+Cake"
+        }, {
+          id: 23,
+          name: "Lavender Honey Cake",
+          description: "A sophisticated and fragrant cake with culinary lavender and sweet honey.",
+          price: 40.00,
+          image: "Lavender+Honey+Cake"
+        }, {
+          id: 24,
+          name: "Biscoff Cheesecake",
+          description: "Creamy cheesecake swirled with Biscoff cookie butter on a Biscoff crust.",
+          price: 45.00,
+          image: "Biscoff+Cheesecake"
+        }, {
+          id: 25,
+          name: "Victoria Sponge",
+          description: "A British classic. Simple sponge cake filled with jam and fresh cream.",
+          price: 30.00,
+          image: "Victoria+Sponge"
+        }, {
+          id: 26,
+          name: "Chocolate Lava Cakes (2-pack)",
+          description: "Individual cakes with a molten chocolate center. Served warm.",
+          price: 15.00,
+          image: "Lava+Cakes"
+        }, {
+          id: 27,
+          name: "Coffee Walnut Cake",
+          description: "A robust coffee-flavored sponge with crunchy walnuts throughout.",
+          price: 34.00,
+          image: "Coffee+Walnut+Cake"
+        }, {
+          id: 28,
+          name: "Spiced Apple Crumble Cake",
+          description: "All the comfort of an apple crumble in a soft, spiced cake.",
+          price: 36.00,
+          image: "Apple+Crumble+Cake"
+        }, {
+          id: 29,
+          name: "German Chocolate Cake",
+          description: "A mild chocolate cake with a rich coconut-pecan frosting.",
+          price: 38.00,
+          image: "German+Chocolate+Cake"
+        }, {
+          id: 30,
+          name: "Funfetti Birthday Cake",
+          description: "A celebration in a cake! Vanilla sponge with colorful sprinkles baked in.",
+          price: 33.00,
+          image: "Funfetti+Cake"
+        }];
+        // --- 2. STATE VARIABLES ---
+        let cart = []; // Stores items added to cart
+        let user = null; // Stores user info after login
+        let redirectToPage = null; // Remembers which page to go to after login
+        // --- 3. DOM ELEMENT SELECTORS ---
+        const pageSections = document.querySelectorAll('.page-section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const productGrid = document.getElementById('product-grid-container');
+        const searchInput = document.getElementById('search-input');
+        const loginForm = document.getElementById('login-form');
+        const loginNav = document.getElementById('login-nav-link');
+        // Cart Modal Elements
+        const cartModalOverlay = document.getElementById('cart-modal-overlay');
+        const openCartBtn = document.getElementById('open-cart-btn');
+        const closeCartBtn = document.getElementById('close-cart-btn');
+        const cartItemsList = document.getElementById('cart-items-list');
+        // FIX: ID corrected to match the new HTML structure:
+        const cartTotalPriceDisplay = document.getElementById('cart-total-price');
+        const cartCount = document.getElementById('cart-count');
+        const placeOrderBtn = document.getElementById('place-order-btn');
+        const cartRemarksInput = document.getElementById('cart-remarks-input');
+        const toast = document.getElementById('toast-notification');
+        // --- 4. NAVIGATION LOGIC ---
+        function showPage(pageId) {
+          pageSections.forEach(section => {
+            section.classList.remove('active');
+          });
+          const activePage = document.getElementById(pageId);
+          if (activePage) {
+            activePage.classList.add('active');
+          }
+          navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.dataset.page === pageId) {
+              link.classList.add('active');
+            }
+          });
+          window.scrollTo(0, 0);
+        }
+        navLinks.forEach(link => {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const pageId = link.dataset.page;
+            if (pageId === 'profile') {
+              showPage('login');
+            } else {
+              showPage(pageId);
+            }
+          });
+        });
+        // --- 5. LOGIN & USER STATE ---
+        function checkUserLogin() {
+          const storedUser = localStorage.getItem('ummeBakesUser');
+          if (storedUser) {
+            user = JSON.parse(storedUser);
+            updateLoginState();
+          }
+        }
+
+        function updateLoginState() {
+          if (user) {
+            loginNav.textContent = 'Profile';
+            loginNav.dataset.page = 'profile';
+            document.getElementById('user-name').value = user.name;
+            document.getElementById('user-email').value = user.email;
+            document.getElementById('user-phone').value = user.phone;
+            document.getElementById('user-location').value = user.location;
+          } else {
+            loginNav.textContent = 'Login';
+            loginNav.dataset.page = 'login';
+          }
+        }
+        loginForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          user = {
+            name: document.getElementById('user-name').value,
+            email: document.getElementById('user-email').value,
+            phone: document.getElementById('user-phone').value,
+            location: document.getElementById('user-location').value,
+          };
+          localStorage.setItem('ummeBakesUser', JSON.stringify(user));
+          updateLoginState();
+          if (redirectToPage) {
+            showPage(redirectToPage);
+            redirectToPage = null;
+          } else {
+            showPage('home');
+          }
+          showToast(`Welcome, ${user.name}!`);
+        });
+        // --- 6. SHOP & PRODUCT LOGIC ---
+        function renderProducts(filter = '') {
+          productGrid.innerHTML = '';
+          const filteredProducts = allProducts.filter(product => product.name.toLowerCase().includes(filter) || product.description.toLowerCase().includes(filter));
+          if (filteredProducts.length === 0) {
+            // FIX: Corrected broken string concatenation
+            productGrid.innerHTML = ' < p class = "cart-empty-msg"
+            style = "grid-column: 1 / -1;" > No products found matching your search. < /p>';
+            return;
+          }
+          filteredProducts.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                        
+										<div class="product-image-placeholder" style="background-image: url('https://via.placeholder.com/300x250/F4E3D3/8D5B4C?text=${product.image.replace(/ /g, '+')}')"></div>
+										<div class="product-content">
+											<h3>${product.name}</h3>
+											<p>${product.description}</p>
+											<button class="btn add-to-cart-btn" data-id="${product.id}">
+                                Add to Cart ($${product.price.toFixed(2)})
+                            </button>
+										</div>
+                    `;
+            productGrid.appendChild(card);
+          });
+        }
+        searchInput.addEventListener('input', (e) => {
+          renderProducts(e.target.value.toLowerCase());
+        });
+        // --- 7. CART LOGIC ---
+        productGrid.addEventListener('click', (e) => {
+          if (e.target.classList.contains('add-to-cart-btn')) {
+            if (!user) {
+              redirectToPage = 'shop';
+              showPage('login');
+              alert('Please log in to add items to your cart.');
+            } else {
+              const productId = parseInt(e.target.dataset.id);
+              addToCart(productId);
+            }
+          }
+        });
+
+        function addToCart(productId) {
+          const existingItem = cart.find(item => item.id === productId);
+          if (existingItem) {
+            existingItem.quantity++;
+          } else {
+            cart.push({
+              id: productId,
+              quantity: 1
+            });
+          }
+          updateCartUI();
+          showToast('Item added to cart!');
+        }
+        cartItemsList.addEventListener('click', (e) => {
+          if (e.target.classList.contains('remove-item-btn')) {
+            const productId = parseInt(e.target.dataset.id);
+            cart = cart.filter(item => item.id !== productId);
+            updateCartUI();
+            showToast('Item removed from cart.');
+          }
+        });
+
+        function updateCartUI() {
+          renderCartItems();
+          updateCartTotal();
+          updateCartCount();
+        }
+
+        function updateCartCount() {
+          const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+          if (totalItems > 0) {
+            cartCount.textContent = totalItems;
+            cartCount.style.display = 'block';
+          } else {
+            cartCount.style.display = 'none';
+          }
+        }
+
+        function renderCartItems() {
+          cartItemsList.innerHTML = '';
+          if (cart.length === 0) {
+            // FIX: Corrected broken string concatenation
+            cartItemsList.innerHTML = ' < p class = "cart-empty-msg" > Your cart is currently empty. < /p>';
+          } else {
+            cart.forEach(cartItem => {
+              const product = allProducts.find(p => p.id === cartItem.id);
+              const li = document.createElement('li');
+              li.className = 'cart-item';
+              li.innerHTML = `
+                            
+										<div class="cart-item-info">
+											<h4>${product.name} (x${cartItem.quantity})</h4>
+											<p>$${(product.price * cartItem.quantity).toFixed(2)}</p>
+										</div>
+										<button class="remove-item-btn" data-id="${product.id}">Remove</button>
+                        `;
+              cartItemsList.appendChild(li);
+            });
+          }
+        }
+        let currentTotal = 0.0;
+
+        function updateCartTotal() {
+          currentTotal = cart.reduce((sum, cartItem) => {
+            const product = allProducts.find(p => p.id === cartItem.id);
+            return sum + (product.price * cartItem.quantity);
+          }, 0);
+          cartTotalPriceDisplay.textContent = `$${currentTotal.toFixed(2)}`;
+        }
+        openCartBtn.addEventListener('click', () => {
+          if (!user) {
+            redirectToPage = 'shop';
+            showPage('login');
+            alert('Please log in to view your cart.');
+            return;
+          }
+          cartModalOverlay.classList.add('active');
+        });
+        closeCartBtn.addEventListener('click', () => {
+          cartModalOverlay.classList.remove('active');
+        });
+        cartModalOverlay.addEventListener('click', (e) => {
+          if (e.target === cartModalOverlay) {
+            cartModalOverlay.classList.remove('active');
+          }
+        });
+        // --- 8. CORRECTED: ORDER PLACEMENT LOGIC (Using FormSubmit) ---
+        placeOrderBtn.addEventListener('click', () => {
+          if (!user) {
+            showToast('Please log in before placing an order.');
+            showPage('login');
+            redirectToPage = 'shop';
+            return;
+          }
+          if (cart.length === 0) {
+            showToast('Your cart is empty. Add items first.');
+            return;
+          }
+          // 1. Gather all necessary data
+          const remarks = cartRemarksInput.value;
+          const orderDetails = cart.map(item => {
+            const product = allProducts.find(p => p.id === item.id);
+            return `${product.name} (x${item.quantity}) - $${(product.price * item.quantity).toFixed(2)}`;
+          }).join('\n'); // Formatted string for FormSubmit body
+          const totalAmount = currentTotal.toFixed(2);
+          const subjectLine = `New Umme Bakes Order from ${user.name}`;
+          // 2. Create a dynamic, hidden form to submit to FormSubmit
+          const form = document.createElement('form');
+          form.setAttribute("action", "https://formsubmit.co/aliasgarssemari@gmail.com");
+          form.setAttribute("method", "POST");
+          form.setAttribute("enctype", "multipart/form-data");
+          form.style.display = "none";
+          // Helper to create hidden inputs
+          const addInput = (name, value) => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = name;
+            input.value = value;
+            form.appendChild(input);
+          };
+          // Add FormSubmit fields
+          addInput('_subject', subjectLine);
+          // Redirect user back to home page after FormSubmit
+          addInput('_next', window.location.origin + window.location.pathname + '#home');
+          addInput('_captcha', 'false'); // Recommended to disable the reCAPTCHA
+          // Add Customer Info (from user state)
+          addInput('Customer_Name', user.name);
+          addInput('Customer_Email', user.email);
+          addInput('Customer_Phone', user.phone);
+          addInput('Delivery_Location', user.location);
+          // Add Order Details
+          addInput('Order_Items', orderDetails);
+          addInput('Total_Amount', `$${totalAmount}`);
+          addInput('Customer_Remarks', remarks || 'No remarks provided.');
+          // 3. Append to body and submit
+          document.body.appendChild(form);
+          showToast('Placing your order...');
+          // Clear cart immediately before submission
+          cart = [];
+          cartRemarksInput.value = '';
+          updateCartUI();
+          cartModalOverlay.classList.remove('active');
+          form.submit(); // This redirects the user
+        });
+        // --- 9. UTILITY FUNCTIONS ---
+        let toastTimer;
+
+        function showToast(message) {
+          toast.textContent = message;
+          toast.classList.add('show');
+          if (toastTimer) {
+            clearTimeout(toastTimer);
+          }
+          toastTimer = setTimeout(() => {
+            toast.classList.remove('show');
+          }, 3000);
+        }
+        // --- 10. INITIALIZATION ---
+        function init() {
+          showPage('home');
+          renderProducts();
+          checkUserLogin();
+        }
+        init();
+      });
+    </script>
+  </body>
+</html>
